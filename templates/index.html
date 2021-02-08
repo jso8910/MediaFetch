@@ -1,0 +1,90 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+{% block title %}
+MediaFetch
+{% endblock %}
+<br>
+<br>
+
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="logoLink" style="width: 100%; display: block;" href="#" target="_self"><img src="{{ url_for('static', filename='images/MediaFetch.png') }}" alt="MediaFetch logo" class="logo"></a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a class='navbar-link' href="#">Home</a></li>
+        {% if logged_in == True %}
+        <li><a href="{{ url_for('login') }}" class='navbar-link'>Login</a></li>
+        <li><a href="{{ url_for('signup') }}" class='navbar-link'>Sign Up</a></li>
+        {% else %}
+        <li><a href="{{ url_for('dashboard') }}" class='navbar-link'>Dashboard</a></li>
+        <li><a href="{{ url_for('documentation') }}" class='navbar-link'>Documentation</a></li>
+        <li><a href="{{ url_for('logout') }}" class='navbar-link'>Log Out</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</nav>
+<main data-router-wrapper>
+  <section data-router-view='home'>
+    <div class="container">
+
+      <div class="starter-template">
+        <div class="title" style="padding-top: 20px;">
+          <div class="text-title" style="float:left;">
+            <h1 class="title-text" style="width: 250px; margin-top: 25px; font-size: 45px;"><strong>Welcome to MediaFetch</strong></h1>
+          </div>
+          <div class="logo-title">
+            <img src="{{ url_for('logo') }}" alt="MediaFetch logo" style="height: 150px;">
+          </div>
+        </div>
+        <p class="lead">A simple JSON news API</p>
+        <p id="demo"></p>
+      </div>
+      <div class="index-content">
+        <hr>
+        <h2>A truly free news API</h2>
+        <ul style="margin-bottom: 50px">
+          <li>
+            <h4>No hidden charges</h4>
+          </li>
+          <li>
+            <h4>No cost to use. Ever.</h4>
+          </li>
+          <li>
+            <h4>Unlimited requests</h4>
+          </li>
+        </ul>
+        <hr>
+        <h3>Easy to read JSON format</h3>
+        <h4>No complicated parsing or indexing</h4>
+        <hr>
+        <h3>Get started in just a couple of minutes</h3>
+        <h4>Sign up and make your first API call now!</h4>
+        <hr>
+
+      </div>
+    </section>
+  </main>
+
+</div><!-- /.container -->
+<footer>
+  <div class="footer">
+    <p>Copyright &copy; 2020 Jason R</p>
+  </div>
+</footer>
+{% endblock %}

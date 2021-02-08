@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}
+404 Not Found
+{% endblock %}
+<br><br>
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/prism.css')}}">
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="logoLink" style=" width: 100%; display: block;" href="{{ url_for('homePage') }}" target="_self"><img src="{{ url_for('static', filename='images/MediaFetch.png') }}" alt="MediaFetch logo" class="logo"></a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a class='navbar-link' href="{{ url_for('homePage') }}">Home</a></li>
+        {% if logged_in == True %}
+        <li><a href="{{ url_for('login') }}" class='navbar-link'>Login</a></li>
+        <li><a href="{{ url_for('signup') }}" class='navbar-link'>Sign Up</a></li>
+        {% else %}
+        <li><a href="{{ url_for('dashboard') }}" class='navbar-link'>Dashboard</a></li>
+        <li><a href="{{ url_for('documentation') }}" class='navbar-link'>Documentation</a></li>
+        <li><a href="{{ url_for('logout') }}" class='navbar-link'>Log Out</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</nav>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<div class="not_found_div">
+  <h1 class="not_found heading">404: Page not found</h1>
+  <h2 class="not_found subheading">Make sure you didn't spell anything wrong</h2>
+  <h4><a href="/">Head back to the home page</a></h4>
+  <h4><a href="/dashboard">Head to the dashboard (you must be logged in)</a></h4>
+</div>
+
+{% endblock %}

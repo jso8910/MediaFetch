@@ -1,0 +1,229 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Documentation
+{% endblock %}
+<br><br>
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/prism.css')}}">
+{% endblock %}
+
+{% block content %}
+<<script src="{{ url_for('static', filename='javascript/fartscroll.js') }}" charset="utf-8"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+    if (Math.floor(Math.random() * 1000) == 100) { fartscroll(); }
+    $(document).ready(function() {
+    // Add smooth scrolling to all links
+    $("a").on('click', function(event) {
+
+      // Make sure this.hash has a value before overriding default behavior
+      if (this.hash !== "") {
+        // Prevent default anchor click behavior
+        event.preventDefault();
+
+        // Store hash
+        var hash = this.hash;
+
+        // Using jQuery's animate() method to add smooth page scroll
+        // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+        $('html, body').animate({
+          scrollTop: $(hash).offset().top
+        }, 800, function() {
+
+          // Add hash (#) to URL when done scrolling (default click behavior)
+          window.location.hash = hash;
+        });
+      } // End if
+    });
+  });
+</script>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="logoLink" style=" width: 100%; display: block;" href="{{ url_for('homePage') }}" target="_self"><img src="{{ url_for('static', filename='images/MediaFetch.png') }}" alt="MediaFetch logo" class="logo"></a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li><a class='navbar-link' href="{{ url_for('homePage') }}">Home</a></li>
+        {% if logged_in == True %}
+        <li><a href="{{ url_for('login') }}" class='navbar-link'>Login</a></li>
+        <li><a href="{{ url_for('signup') }}" class='navbar-link'>Sign Up</a></li>
+        {% else %}
+        <li><a href="{{ url_for('dashboard') }}" class='navbar-link'>Dashboard</a></li>
+        <li class="active"><a href="{{ url_for('documentation') }}" class='navbar-link'>Documentation</a></li>
+        <li><a href="{{ url_for('logout') }}" class='navbar-link'>Log Out</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</nav>
+<br><br><br>
+<div>
+  <div class="sidebar">
+    <ul class="sidenav">
+      <a class="nav-link" style="border-bottom: 0px solid #c7a20d;" href="#welcome">Welcome</a>
+      <a class="nav-link" style="border-bottom: 0px solid #c7a20d;" href="#data">Data Structure</a>
+      <a class="nav-link" style="border-bottom: 0px solid #c7a20d;" href="#link2s">Link</a>
+      <a class="nav-link" style="border-bottom: 0px solid #c7a20d;" href="#disableds">Disabled</a>
+    </ul>
+  </div>
+  <div class="documentation content">
+    <div id="welcome">
+      <h1>Welcome!</h1>
+      <p>Welcome to MediaFetch! This is a simple, and free, API that anyone can use easily. All it requires is a few lines of code to get started.</p>
+      <br>
+      <p>Here are a few things you can do with the API:</p>
+      <ul>
+        <li>
+          <p>Find the latest news from your favorite source</p>
+        </li>
+        <li>
+          <p>Look up information about a company</p>
+        </li>
+        <li>
+          <p>Use news on your website</p>
+        </li>
+        <li>
+          <p>Gather data about the news</p>
+        </li>
+      </ul>
+      <hr>
+      <p>Here are the different types of parameters you can add to your request</p>
+      <ul>
+        <li>
+          <p>Query string: this is required, and is not 100% guaranteed to be included inside all results</p>
+        </li>
+        <li>
+          <p>API token: this is the only other required parameter, and is available from <a href="{{ url_for('dashboard') }}">the dashboard</a></p>
+        </li>
+        <li>
+          <p>Time: this is the relative time ago that the article can be from. For example, 1h for 1 hour ago, 1d for 1 day ago, and 1y for 1 year. You can use any of these different keywords with different values.</p>
+        </li>
+        <li>
+          <p>Required: this is a string that must be included within the results. This is best for exact results</p>
+        </li>
+        <li>
+          <p>Excluding: this is a string that cannot be included within results.</p>
+        </li>
+      </ul>
+      <p>Using all of these, we can make an example request. This example will be in Python 3. If you are logged in, your API token will show up in the code for easy use of these examples.</p>
+      <figure>
+        <figcaption class="code-caption"></figcaption>
+        <pre><code class="language-python" contenteditable spellcheck="false">import requests
+
+token = '{{ token }}'
+query = 'Technology'
+when = '1h'
+excluding = 'Phones'
+requiring = 'Tablets'
+
+response = requests.get('http://localhost:5000/api?query=' + query +
+                        '&time=' + when +
+                        '&exclude=' + excluding +
+                        '&require=' + requiring +
+                        '&token=' + token)
+
+print(response.json())</code></pre>
+      </figure>
+    </div>
+    <div id="data">
+      <h1>Data Structure</h1>
+      <p>Just before, an example API call with Python was shown, but, it was not shown how to access the data. Yet again, Python will be used for all examples, though accessing the data in most languages is very similar.</p>
+      <br>
+      <p>Before we look at code, here is a small example API call (note that this is just one article from the call)</p>
+      <pre><code class="language-json" contenteditable spellcheck='false'>{
+  "status": "success",
+  "error": null,
+  "articlesFound": 1,
+  "articles": [
+    {
+      "source": "Forbes",
+      "title": "Apple’s Surprising MacBook Air Decision",
+      "articlePreview": "With Apple paying more attention to MacOS now that the transition to ARM is under way, details on the new Mac hardware are coming out.",
+      "url": "https://news.google.com/articles/CBMidmh0dHBzOi8vd3d3LmZvcmJlcy5jb20vc2l0ZXMvZXdhbnNwZW5jZS8yMDIwLzA3LzA2L2FwcGxlLW1hY2Jvb2stYWlyLWNhbmNlbGxlZC1tYWNvcy1pbnRlbC1hcm0tc3BlY3MtcG93ZXItbGlnaHR3ZWl0aC_SAXpodHRwczovL3d3dy5mb3JiZXMuY29tL3NpdGVzL2V3YW5zcGVuY2UvMjAyMC8wNy8wNi9hcHBsZS1tYWNib29rLWFpci1jYW5jZWxsZWQtbWFjb3MtaW50ZWwtYXJtLXNwZWNzLXBvd2VyLWxpZ2h0d2VpdGgvYW1wLw?hl=en-US&gl=US&ceid=US%3Aen",
+      "urlToImage": "https://lh4.googleusercontent.com/proxy/0ZARymNgmvtv1JB9gB1Lzwz-hpuxM3FchYeojpMfKWRzaeE-4LytfQhSbIVNoohLdRc1ppPoPF1yfaekCdZ_QlrlBvGwj1KS8U7aaY8E0J0n4_ZKSSwpDg-loN4N6kMJXoM2WJuEA9cpDhlCB9SnY8Rm3NUTOZAzo-L_7p1X--dgsAischKjyrAgSrL-Y7f9eKCBls8jNLQQUgokAxoy0H4LlozphIduJwMYkvC3AGyrzhax_Rx_HvDVQ94=-p-h100-w100",
+      "timePublished": "2020-07-06T22:20:00Z"
+    },
+  ]
+}</code></pre>
+      <br><br>
+      <p>So, this is what a call with the query 'Apple' returns (with all but one result clipped off). Let's see the attributes of the call</p>
+      <ul>
+        <li>
+          <p>status: This will either be 'error' or 'success'. If it is error, something has gone wrong, and you may want to see what the issue is from the next attribute</p>
+        </li>
+        <li>
+          <p>error: A vast majority of the time this will be 'null', aka a nonetype object, but if there is an error it will be here. Here are some errors. All error messages have been made to be descriptive, so no explanation is needed.</p>
+          <ul>
+            <li>
+              <p>api token is missing</p>
+            </li>
+            <li>
+              <p>api token is invalid</p>
+            </li>
+            <li>
+              <p>error collecting data</p>
+            </li>
+            <li>
+              <p>no articles found</p>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <p>articlesFound: This is simple, the number of articles found. If you have a broad search, this will be around 90-100, but can sometimes be lower if you are very specific</p>
+        </li>
+        <li>
+          <p>articles: This is a list (or array) with all of the articles. You can index in starting with 0 as the very beginning of the list.</p>
+        </li>
+        <li>
+          <p>source: This is the first part of each article dictionary, and this is the source that wrote the article (not the author)</p>
+        </li>
+        <li>
+          <p>title: The title of the article</p>
+        </li>
+        <li>
+          <p>articlePreview: The first bit of the article</p>
+        </li>
+        <li>
+          <p>url: The url of the article. It is a Google News URL, but redirects to the original source</p>
+        </li>
+        <li>
+          <p>urlToImage: The url of the image of the article.</p>
+        </li>
+        <li>
+          <p>timePublished: An unformatted datetime of the time the article was published</p>
+        </li>
+      </ul>
+      <p>Here is an example of indexing into the result (defined as the variable response) and getting the title</p>
+      <pre><code class="language-python">print(response['articles'][0]['title'])</code></pre>
+      <p>Don't forget to cast response to a json object beforehand by this line of code: </p>
+      <pre><code class="language-python">response = response.json()</code></pre>
+    </div>
+    <div id="link2s">
+      <h1>Link2</h1>
+    </div>
+    <div style="padding-bottom: 50px" id="disableds">
+      <h1>This is a test</h1>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer">
+    <p>Copyright &copy; 2020 Jason R</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='javascript/prism.js')}}" </script>
+  {% endblock %}

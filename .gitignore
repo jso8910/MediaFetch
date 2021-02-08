@@ -1,0 +1,9 @@
+__pycache__/
+.DS_Store
+bin
+lib
+database.db
+pyvenv.cfg
+test.py
+test2.py
+

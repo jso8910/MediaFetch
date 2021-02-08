@@ -1,0 +1,68 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+{% block title %}
+Redirect page
+{% endblock %}
+<br>
+<br>
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="logoLink" style=" width: 100%; display: block;" href="{{ url_for('homePage') }}" target="_self"><img src="{{ url_for('static', filename='images/MediaFetch.png') }}" alt="MediaFetch logo" class="logo"></a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a class='navbar-link' href="{{ url_for('homePage') }}">Home</a></li>
+        {% if logged_in == True %}
+        <li><a href="{{ url_for('login') }}" class='navbar-link'>Login</a></li>
+        <li><a href="{{ url_for('signup') }}" class='navbar-link'>Sign Up</a></li>
+        {% else %}
+        <li><a href="{{ url_for('dashboard') }}" class='navbar-link'>Dashboard</a></li>
+        <li><a href="{{ url_for('documentation') }}" class='navbar-link'>Documentation</a></li>
+        <li><a href="{{ url_for('logout') }}" class='navbar-link'>Log Out</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <!--/.nav-collapse -->
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="sent-template">
+    {% if correct == True %}
+    <script>
+      setTimeout(function() {
+        window.location.href = "{{ url_for('homePage') }}";
+      }, 5000);
+    </script>
+    <h1>Your verification email has been sent. Redirecting to the home page in 5 seconds...</h1>
+    {% else %}
+    <script>
+      setTimeout(function() {
+        window.location.href = "{{ url_for('regen') }}";
+      }, 5000);
+    </script>
+    <h1>Invalid email. Redirecting back in 5 seconds.....</h1>
+    {% endif %}
+  </div>
+
+</div><!-- /.container -->
+<footer>
+  <div class="footer">
+    <p>Copyright &copy; 2020 Jason R</p>
+  </div>
+</footer>
+{% endblock %}
