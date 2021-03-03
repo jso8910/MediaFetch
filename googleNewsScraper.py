@@ -24,59 +24,51 @@ def searchGNews(query, timeRange='', excluding='', requiring=''):
     if requiring != '':
         timeRange = ' "' + requiring + '"'
     URL = 'https://news.google.com/search?q=' + str(query) + requiring + timeRange + excluding +'&hl=en-US&gl=US&ceid=US:en'
-    print(URL)
     try:
-        page = requests.get(URL)
+        page = requests.get(URL) # Get the html of the page
     except:
-        data = {}
-        data['status'] = 'error'
+        data = {} # Create json 
+        data['status'] = 'error' # Errors are bad 
         data['error'] = 'network error server side.' \
                         'contact us on our support page to let' \
                         'us know about the issue'
-        data['articlesFound'] = 0
+        data['articlesFound'] = 0 
         data['articles'] = []
-        return data
+        return data 
     try:
-        print("made it here")
-        soup = BeautifulSoup(page.text, 'lxml')
-        print("soup")
-        articles = soup.find_all('div', class_='NiLAwe y6IFtc R7GTQ keNKEd j7vNaf nID9nc')
-        print("articles")
+        soup = BeautifulSoup(page.text, 'lxml') # A soup of the page
+        articles = soup.find_all('div', class_='NiLAwe y6IFtc R7GTQ keNKEd j7vNaf nID9nc') # Find all the articles (certain class) 
     except:
-        data = {}
+        data = {} # Oh no another error
         data['status'] = 'error'
         data['error'] = 'error collecting data'
         data['articlesFound'] = 0
         data['articles'] = []
         return data
 
-    # newId = str(binascii.b2a_hex(os.urandom(30)))
-    # newId = newId.strip("b'")
-    # newId = newId.strip("'")
-    # filename = str(newId) + '.json'
-    data = {}
-    data['status'] = 'searching'
+    data = {} # Created it for real 
+    data['status'] = 'searching' # search beep boop 
     data['error'] = None
-    data['articlesFound'] = len(articles)
+    data['articlesFound'] = len(articles) # the length of the articles 
     numArticles = 0
     data['articles'] = []
     if len(articles) < 1:
-        data['status'] = 'error'
-        data['error'] = 'no articles found'
+        data['status'] = 'error' # OH NO 
+        data['error'] = 'no articles found' # oh phew it isn't my fault 
         return data
     for article in articles:
         numArticles += 1
 
-        title_elem = article.find('h3', class_='ipQwMb ekueJc RD0gLb')
-        article_link = article.find('a', class_='DY5T1d')
-        article_snippet = article.find('span', class_='xBbh9')
-        image_url = article.find('img', class_='tvs3Id QwxBBf')
+        title_elem = article.find('h3', class_='ipQwMb ekueJc RD0gLb') # The title 
+        article_link = article.find('a', class_='DY5T1d') # The link 
+        article_snippet = article.find('span', class_='xBbh9') # The blurb 
+        image_url = article.find('img', class_='tvs3Id QwxBBf') # The image url 
 
-        publisher = article.find('a', class_='wEwyrc AVN2gc uQIVzc Sksgp')
-        time = article.find('time', class_='WW6dff uQIVzc Sksgp')
+        publisher = article.find('a', class_='wEwyrc AVN2gc uQIVzc Sksgp') # The publisher (eg nytimes cnn) 
+        time = article.find('time', class_='WW6dff uQIVzc Sksgp') # Time it was published 
 
-        url = article_link['href'].replace('./', 'https://news.google.com/', 1)
-        if time == None:
+        url = article_link['href'].replace('./', 'https://news.google.com/', 1) # URL 
+        if time == None: # Sometimes that breaks
             data['articles'].append({
                 "source": publisher.text,
                 "title": title_elem.text,
@@ -84,7 +76,7 @@ def searchGNews(query, timeRange='', excluding='', requiring=''):
                 "url": url,
                 "urlToImage": image_url['src'],
                 "timePublished": "Not found"})
-        else:
+        else: # Otherwise it isn't broken
             data['articles'].append({
                 "source": publisher.text,
                 "title": title_elem.text,
@@ -93,9 +85,5 @@ def searchGNews(query, timeRange='', excluding='', requiring=''):
                 "urlToImage": image_url['src'],
                 "timePublished": time['datetime']})
 
-    # with open(filename, "w") as outfile:
-    #     json.dump(data, outfile)
-    data['status'] = 'success'
+    data['status'] = 'success' # success
     return data
-
-# searchGNews('cnn')
